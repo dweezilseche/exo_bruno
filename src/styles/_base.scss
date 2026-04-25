@@ -1,6 +1,0 @@
-/* CSS variables exposed to runtime. */
-@use "abstracts";
-
-:root {
-  --custom-accent: #{abstracts.$custom-accent};
-}
