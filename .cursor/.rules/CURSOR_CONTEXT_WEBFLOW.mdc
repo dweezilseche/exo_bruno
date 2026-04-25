@@ -1,0 +1,309 @@
+# Contexte Projet — JS + CSS Custom pour intégration Webflow One-Page
+
+## Résumé du projet
+
+On intègre un **one-page dans Webflow** à partir d'une maquette Figma. Webflow gère le HTML/CSS principal via son Designer visuel. Ce repo contient le **JavaScript custom** et le **CSS custom compilé depuis Sass** pour les comportements/animations non couverts nativement.
+
+---
+
+## Rôle de ce repo
+
+Ce repo est le **code source JS + CSS custom** du projet Webflow. Il est servi en production via jsDelivr (CDN qui lit directement depuis GitHub). Webflow charge le bundle JS via une balise `<script>` et la feuille CSS via une balise `<link>` dans ses Custom Code settings.
+
+**Ce que ce repo contient :** le JS custom (animations GSAP, smooth scroll Lenis, sliders Swiper, text split) + les éventuels overrides CSS custom compilés depuis Sass.
+**Ce que ce repo ne contient PAS :** HTML et structure du site (tout ça vit dans Webflow Designer).
+
+---
+
+## Stack technique
+
+### Librairies chargées via CDN dans Webflow (ne pas les bundler ici)
+
+Les librairies suivantes sont chargées directement dans Webflow (Project Settings → Custom Code → Footer) via CDN. Elles sont donc disponibles comme **variables globales** dans notre code. Ne pas les installer via npm, ne pas les importer via `import`.
+
+| Librairie | Version | CDN | Variable globale |
+|---|---|---|---|
+| GSAP | 3.x | `https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js` | `gsap` |
+| GSAP ScrollTrigger | 3.x | `https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js` | `ScrollTrigger` |
+| Swiper | 11.x | `https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js` | `Swiper` |
+| Lenis | 1.x | `https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js` | `Lenis` |
+| SplitType | 0.3.x | `https://cdn.jsdelivr.net/npm/split-type@0.3/umd/index.min.js` | `SplitType` |
+
+**Important :** ces librairies sont en `defer` dans Webflow, donc notre bundle doit aussi être en `defer` et wrappé dans un `DOMContentLoaded`.
+
+### Bundler
+
+On utilise **esbuild** pour bundler les modules en un seul fichier `dist/bundle.min.js`.
+
+```bash
+npm run build
+# JS  : esbuild src/main.js --bundle --minify --outfile=dist/bundle.min.js
+# CSS : sass src/styles.scss dist/styles.min.css --style=compressed --no-source-map
+```
+
+---
+
+## Structure du repo
+
+```
+projet-client-webflow/
+├── src/
+│   ├── main.js              ← Point d'entrée, orchestrateur
+│   ├── animations.js        ← Animations GSAP + ScrollTrigger
+│   ├── slider.js            ← Initialisation Swiper
+│   ├── smooth-scroll.js     ← Initialisation Lenis + connexion GSAP
+│   └── text-split.js        ← Animations texte SplitType + GSAP
+│   └── styles.scss          ← CSS custom (source Sass)
+├── dist/
+│   └── bundle.min.js        ← Fichier bundlé servi par jsDelivr (généré, ne pas éditer)
+│   └── styles.min.css       ← CSS compilé servi par jsDelivr (généré, ne pas éditer)
+├── package.json
+├── .gitignore
+├── CURSOR_CONTEXT_WEBFLOW.md ← Ce fichier
+└── README.md
+```
+
+---
+
+## Convention de ciblage des éléments
+
+### Règle absolue : on cible par attributs `data-*`, JAMAIS par classes Webflow.
+
+Les classes Webflow peuvent être renommées à tout moment dans le Designer par n'importe qui. Si on cible par classe, le JS casse silencieusement.
+
+On ajoute des **Custom Attributes** sur les éléments dans Webflow (panneau Settings de l'élément) et on les cible en JS.
+
+### Attributs utilisés
+
+| Attribut | Valeurs possibles | Usage |
+|---|---|---|
+| `data-animate` | `fade-up`, `fade-in`, `fade-left`, `fade-right`, `scale-in` | Animations d'entrée au scroll |
+| `data-animate-delay` | `0.1`, `0.2`, `0.3`... | Délai d'animation (en secondes) |
+| `data-animate-stagger` | `0.05`, `0.1`, `0.15`... | Stagger pour les groupes d'éléments |
+| `data-split` | `chars`, `words`, `lines` | Type de split pour animations texte |
+| `data-slider` | `testimonials`, `gallery`, `logos`... | Identifiant du slider Swiper |
+| `data-speed` | `0.5`, `0.8`, `1.2`... | Vitesse de parallax |
+| `data-scroll` | `section` | Marqueur pour les sections Lenis |
+
+### Exemple de ciblage
+
+```javascript
+// ✅ BON — cible par attribut custom
+document.querySelectorAll("[data-animate='fade-up']")
+
+// ❌ MAUVAIS — cible par classe Webflow
+document.querySelectorAll(".section_hero .heading-xl")
+```
+
+---
+
+## Architecture des modules
+
+### main.js — Orchestrateur
+
+```javascript
+import { initSmoothScroll } from "./smooth-scroll.js";
+import { initAnimations } from "./animations.js";
+import { initTextSplit } from "./text-split.js";
+import { initSliders } from "./slider.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  initSmoothScroll();
+  initTextSplit();
+  initAnimations();
+  initSliders();
+});
+```
+
+### smooth-scroll.js — Lenis + GSAP
+
+```javascript
+export function initSmoothScroll() {
+  const lenis = new Lenis({
+    lerp: 0.1,
+    smooth: true,
+  });
+
+  // Connecter Lenis à GSAP ScrollTrigger
+  lenis.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
+}
+```
+
+### animations.js — GSAP ScrollTrigger
+
+```javascript
+export function initAnimations() {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Fade up
+  document.querySelectorAll("[data-animate='fade-up']").forEach((el) => {
+    const delay = parseFloat(el.getAttribute("data-animate-delay")) || 0;
+    gsap.from(el, {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      delay,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      },
+    });
+  });
+
+  // Ajouter ici les autres types d'animation (fade-in, fade-left, scale-in...)
+}
+```
+
+### text-split.js — SplitType + GSAP
+
+```javascript
+export function initTextSplit() {
+  // Split par caractères
+  document.querySelectorAll("[data-split='chars']").forEach((el) => {
+    const split = new SplitType(el, { types: "chars" });
+    gsap.from(split.chars, {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.03,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      },
+    });
+  });
+
+  // Ajouter ici split par words, lines...
+}
+```
+
+### slider.js — Swiper
+
+```javascript
+export function initSliders() {
+  // Slider témoignages
+  const testimonialEl = document.querySelector("[data-slider='testimonials']");
+  if (testimonialEl) {
+    new Swiper(testimonialEl, {
+      slidesPerView: 1,
+      spaceBetween: 24,
+      loop: true,
+      autoplay: { delay: 4000, disableOnInteraction: false },
+      pagination: {
+        el: testimonialEl.querySelector(".swiper-pagination"),
+        clickable: true,
+      },
+      breakpoints: {
+        768: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
+      },
+    });
+  }
+
+  // Ajouter ici d'autres sliders...
+}
+```
+
+---
+
+## Déploiement
+
+### Workflow de développement
+
+1. Modifier le code dans `src/`
+2. `npm run build` → génère `dist/bundle.min.js` + `dist/styles.min.css`
+3. `git add . && git commit -m "description" && git push`
+4. Purger le cache jsDelivr si besoin :
+   - `https://purge.jsdelivr.net/gh/{user}/{repo}@latest/dist/bundle.min.js`
+   - `https://purge.jsdelivr.net/gh/{user}/{repo}@latest/dist/styles.min.css`
+5. Rafraîchir le site Webflow publié pour vérifier
+
+### Chargement dans Webflow
+
+Dans **Project Settings → Custom Code → Footer** :
+
+```html
+<!-- Librairies (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/split-type@0.3/umd/index.min.js" defer></script>
+
+<!-- Bundle custom (GitHub → jsDelivr) -->
+<script src="https://cdn.jsdelivr.net/gh/{user}/{repo}@latest/dist/bundle.min.js" defer></script>
+```
+
+Dans **Project Settings → Custom Code → Head** (pour le CSS Swiper + CSS custom) :
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/{user}/{repo}@latest/dist/styles.min.css" />
+```
+
+### Production
+
+En production, remplacer `@latest` par un tag de version (`@v1.0.0`) pour éviter les surprises liées au cache jsDelivr.
+
+### Connexion build -> Webflow (recommandé)
+
+1. Le build local génère les fichiers dans `dist/`.
+2. Ces fichiers sont commit/push sur GitHub.
+3. Webflow charge les assets depuis jsDelivr (`gh/{user}/{repo}`) via les balises `<script>` et `<link>` ci-dessus.
+4. Après chaque push :
+   - soit garder `@latest` + purge cache ;
+   - soit versionner par tag (`@vX.Y.Z`) pour un déploiement stable.
+
+---
+
+## Workflow Webflow complet (pour contexte)
+
+L'intégration suit ces phases dans cet ordre strict :
+
+1. **Analyse maquette Figma** — inventaire sections, composants, tokens, animations, responsive
+2. **Config Webflow** — polices, variables couleur, styles typo globaux, classes de layout (Client-First)
+3. **Création composants** — sur une page "Style Guide" (draft), isolés, avec interactions hover natives Webflow, transformés en Components
+4. **Construction sections desktop** — du haut vers le bas, en plaçant les Components, avec attributs `data-*` sur les éléments à animer
+5. **Responsive** — Desktop → Tablet (1024) → Mobile Landscape (768) → Mobile Portrait (480)
+6. **JavaScript custom** — CE REPO : animations scroll, smooth scroll, sliders, text split
+7. **Tests & QA** — vrais appareils, performances mobile, ancres, images
+
+### Ce que Webflow natif gère (pas besoin de JS)
+
+- Hovers sur boutons (changement couleur, scale, transition)
+- Hovers sur cartes (élévation, ombre)
+- Menu hamburger responsive (Navbar native)
+- Transitions CSS simples
+- Animations au scroll basiques (si suffisantes)
+
+### Ce qui nécessite du JS custom (ce repo)
+
+- Smooth scroll global (Lenis)
+- Animations au scroll complexes ou séquencées (GSAP ScrollTrigger)
+- Animations de texte lettre par lettre / mot par mot (SplitType + GSAP)
+- Sliders avec config avancée (Swiper)
+- Parallax précis (GSAP)
+- Toute interaction non couverte par Webflow Interactions natif
+
+---
+
+## Règles pour l'IA (Cursor)
+
+- **Ne jamais générer de HTML** — tout le markup est dans Webflow Designer
+- **CSS autorisé uniquement pour des overrides ciblés** (source Sass dans `src/styles.scss`, sortie `dist/styles.min.css`)
+- **Cas principal CSS : animations CTA non faisables dans Webflow Designer** (hover avancé, effets de glow, micro-interactions)
+- **Ne jamais importer les librairies via npm/import** — elles sont chargées via CDN en global
+- **Toujours cibler les éléments via `data-*` attributes**, jamais via des classes CSS
+- **Toujours wrapper dans `DOMContentLoaded`** — les scripts sont en `defer`
+- **Toujours vérifier l'existence de l'élément** avant d'initialiser (`if (el) { ... }`)
+- **Exporter chaque module comme fonction nommée** — `initAnimations`, `initSliders`, etc.
+- **Le fichier main.js importe et appelle** toutes les fonctions d'init dans le bon ordre
+- **Penser mobile** — désactiver les animations lourdes sous 768px si nécessaire

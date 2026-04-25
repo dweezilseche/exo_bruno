@@ -1,0 +1,5 @@
+/* Scope custom styles with data attributes when possible. */
+
+[data-custom="button-primary"] {
+  border-color: var(--custom-accent);
+}

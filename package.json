@@ -1,0 +1,24 @@
+{
+  "name": "exo-bruno",
+  "version": "1.0.0",
+  "description": "JavaScript custom pour integration Webflow one-page",
+  "main": "src/main.js",
+  "scripts": {
+    "build:js": "esbuild src/main.js --bundle --minify --outfile=dist/bundle.min.js",
+    "build:css": "sass src/styles.scss dist/styles.min.css --style=compressed --no-source-map",
+    "build": "npm run build:js && npm run build:css"
+  },
+  "keywords": [
+    "webflow",
+    "gsap",
+    "lenis",
+    "swiper",
+    "split-type"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.28.0",
+    "sass": "^1.99.0"
+  }
+}
