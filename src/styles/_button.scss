@@ -1,0 +1,5 @@
+@use "buttons" as *;
+
+.cta[data-wf--button--variant="primary"],.cta[data-wf--button--variant="secondary"]{
+    @extend %button;
+}
