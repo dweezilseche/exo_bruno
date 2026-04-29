@@ -1,0 +1,174 @@
+// Bordures en pointillés (reprise des Code Embeds Webflow — mêmes classes côté Designer).
+
+.border-dashed-left,
+.border-dashed-right,
+.border-dashed-top,
+.border-dashed-bottom,
+.border-dashed-x,
+.border-dashed-y,
+.border-dashed-full {
+  --border-dashed-color: #000000;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.border-dashed-left.is-white,
+.border-dashed-right.is-white,
+.border-dashed-top.is-white,
+.border-dashed-bottom.is-white,
+.border-dashed-x.is-white,
+.border-dashed-y.is-white,
+.border-dashed-full.is-white {
+  --border-dashed-color: #ffffff;
+}
+
+.border-dashed-left::before,
+.border-dashed-right::before,
+.border-dashed-top::before,
+.border-dashed-bottom::before,
+.border-dashed-x::before,
+.border-dashed-x::after,
+.border-dashed-y::before,
+.border-dashed-y::after,
+.border-dashed-full::before {
+  content: "";
+  position: absolute;
+  z-index: 99;
+  pointer-events: none;
+}
+
+.border-dashed-left::before {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background-image: linear-gradient(
+    to bottom,
+    var(--border-dashed-color) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 1px 16px;
+  background-repeat: repeat-y;
+  background-position: top left;
+}
+
+.border-dashed-right::before {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1px;
+  background-image: linear-gradient(
+    to bottom,
+    var(--border-dashed-color) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 1px 16px;
+  background-repeat: repeat-y;
+  background-position: top right;
+}
+
+.border-dashed-top::before {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    var(--border-dashed-color) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+  background-position: top left;
+}
+
+.border-dashed-bottom::before {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    var(--border-dashed-color) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+  background-position: bottom left;
+}
+
+.border-dashed-x::before,
+.border-dashed-x::after {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-image: linear-gradient(
+    to bottom,
+    var(--border-dashed-color) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 1px 16px;
+  background-repeat: repeat-y;
+}
+
+.border-dashed-x::before {
+  left: 0;
+  background-position: top left;
+}
+
+.border-dashed-x::after {
+  right: 0;
+  background-position: top right;
+}
+
+.border-dashed-y::before,
+.border-dashed-y::after {
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    var(--border-dashed-color) 0 8px,
+    transparent 8px 16px
+  );
+  background-size: 16px 1px;
+  background-repeat: repeat-x;
+}
+
+.border-dashed-y::before {
+  top: 0;
+  background-position: top left;
+}
+
+.border-dashed-y::after {
+  bottom: 0;
+  background-position: bottom left;
+}
+
+.border-dashed-full::before {
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--border-dashed-color) 0 8px, transparent 8px 16px),
+    linear-gradient(to bottom, var(--border-dashed-color) 0 8px, transparent 8px 16px),
+    linear-gradient(to right, var(--border-dashed-color) 0 8px, transparent 8px 16px),
+    linear-gradient(to bottom, var(--border-dashed-color) 0 8px, transparent 8px 16px);
+
+  background-size:
+    16px 1px,
+    1px 16px,
+    16px 1px,
+    1px 16px;
+
+  background-repeat:
+    repeat-x,
+    repeat-y,
+    repeat-x,
+    repeat-y;
+
+  background-position:
+    top left,
+    top right,
+    bottom left,
+    top left;
+}

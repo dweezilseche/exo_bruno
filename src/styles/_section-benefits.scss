@@ -1,0 +1,20 @@
+// Section Benefits — fond SVG courbes (reprise Code Embed Webflow).
+
+.section_benefits {
+  background-image: url("data:image/svg+xml,%3Csvg width='1440' height='270' viewBox='0 0 1440 270' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1250.88 38.4192C1190.28 13.8948 1018.25 -23.7092 814.897 22.0696C560.703 79.2931 382.126 221.15 337.079 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1180.53 13.8948 980.81 -23.7092 744.724 22.0696C449.617 79.2931 242.297 221.15 190 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1213.99 13.8948 1109.24 -23.7092 985.424 22.0696C830.654 79.2931 721.924 221.15 694.496 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1207.23 13.8948 1083.32 -23.7092 936.838 22.0696C753.74 79.2931 625.11 221.15 592.662 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1199.85 13.8948 1054.96 -23.7092 883.694 22.0696C669.611 79.2931 519.213 221.15 481.274 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1220.26 13.8948 1133.31 -23.7092 1030.54 22.0696C902.074 79.2931 811.823 221.15 789.057 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1226.73 13.8948 1158.18 -23.7092 1077.14 22.0696C975.837 79.2931 904.671 221.15 886.72 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1232.56 13.8948 1180.53 -23.7092 1119.04 22.0696C1042.17 79.2931 988.162 221.15 974.539 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3Cpath d='M1250.88 38.4192C1238.71 13.8948 1204.14 -23.7092 1163.28 22.0696C1112.21 79.2931 1076.33 221.15 1067.28 269.237' stroke='%23C6F3FD' stroke-opacity='0.2' stroke-dasharray='35 15'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 80% auto;
+
+  @media screen and (max-width: 991px) {
+    background-size: 120% auto;
+  }
+
+  @media screen and (max-width: 767px) {
+    background-size: 160% auto;
+  }
+
+  @media screen and (max-width: 479px) {
+    background-size: 220% auto;
+  }
+}

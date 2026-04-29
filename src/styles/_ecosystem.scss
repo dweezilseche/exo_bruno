@@ -1,0 +1,25 @@
+// Bloc Ecosystem — logos + catégories (reprise Code Embed Webflow).
+
+/* Logo color reveal */
+.ecosystem_logo-color {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.ecosystem_logo-wrap:hover .ecosystem_logo-color {
+  opacity: 1;
+}
+
+/* Category brightness */
+.ecosystem_category {
+  transition: filter 0.3s ease;
+  filter: opacity(1);
+}
+
+.ecosystem_map:has(.ecosystem_category:hover) .ecosystem_category {
+  filter: opacity(0.2);
+}
+
+.ecosystem_map:has(.ecosystem_category:hover) .ecosystem_category:hover {
+  filter: opacity(1);
+}

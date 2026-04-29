@@ -33,12 +33,13 @@ Les librairies suivantes sont chargées directement dans Webflow (Project Settin
 
 ### Bundler
 
-On utilise **esbuild** pour bundler les modules en un seul fichier `dist/bundle.min.js`.
+On utilise **Vite** pour générer les assets de production :
+- `dist/bundle.min.js`
+- `dist/styles.min.css`
 
 ```bash
 npm run build
-# JS  : esbuild src/main.js --bundle --minify --outfile=dist/bundle.min.js
-# CSS : sass src/styles.scss dist/styles.min.css --style=compressed --no-source-map
+# -> vite build (config dans vite.config.js)
 ```
 
 ---

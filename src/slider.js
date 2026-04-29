@@ -1,15 +1,17 @@
-/**
- * Parcourt chaque bloc Webflow marqué `data-slider` sur le conteneur Swiper
- * et lance (ou relance) Swiper avec autoplay + contrôles optionnels.
- * Nécessite Swiper en global (script CDN dans Webflow).
- */
+import {
+  bindPlyrPauseOnSlideChange,
+  containerHasPlyrMedia,
+  destroyPlyrInside,
+} from "./plyr.js";
+
 export function initSliders() {
   if (typeof Swiper === "undefined") {
     return;
   }
 
   document.querySelectorAll("[data-slider]").forEach((container) => {
-    // Webflow peut avoir déjà initialisé ce slider : on détruit l’ancienne instance.
+    destroyPlyrInside(container);
+
     if (container.swiper) {
       container.swiper.destroy(true, true);
     }
@@ -20,14 +22,16 @@ export function initSliders() {
       container.querySelector(".swiper-pagination") ||
       container.querySelector(".carousel_pagination");
 
+    const isVideoSlider = containerHasPlyrMedia(container);
+
     const options = {
-      loop: true,
       slidesPerView: 1,
-      autoplay: {
-        delay: 4000,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: false,
-      },
+      loop: !isVideoSlider,
+      // autoplay: {
+      //   delay: isVideoSlider ? 7000 : 4000,
+      //   disableOnInteraction: false,
+      //   pauseOnMouseEnter: false,
+      // },
     };
 
     if (prevButton && nextButton) {
@@ -44,6 +48,7 @@ export function initSliders() {
       };
     }
 
-    new Swiper(container, options);
+    const swiper = new Swiper(container, options);
+    bindPlyrPauseOnSlideChange(container, swiper);
   });
 }

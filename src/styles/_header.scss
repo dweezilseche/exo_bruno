@@ -1,0 +1,31 @@
+@use "variables" as *;
+
+// Les classes has-scrolled / is-visible sont posées sur [data-header] par header.js.
+// Avant : le SCSS ciblait .nav_fixed à l’intérieur du header — sans ce bloc dans Webflow, rien ne bougeait.
+
+[data-header] {
+  transition: transform 650ms $ease;
+}
+
+[data-header].has-scrolled {
+  transform: translateY(-100%);
+}
+
+[data-header].is-visible {
+  transform: translateY(0);
+}
+
+// Variante : animer seulement une barre interne — ajoute la classe nav_fixed sur ce bloc dans le Designer,
+// puis commente les 3 règles [data-header] ci-dessus et décommente le bloc suivant.
+//
+// [data-header] .nav_fixed {
+//   transition: transform 550ms $ease-out-quart;
+// }
+//
+// [data-header].has-scrolled .nav_fixed {
+//   transform: translateY(-100%);
+// }
+//
+// [data-header].is-visible .nav_fixed {
+//   transform: translateY(0);
+// }

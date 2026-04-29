@@ -1,0 +1,23 @@
+// Lecteur qui remplit un bloc Webflow (le parent doit avoir une hauteur définie).
+// Enveloppe le Div « js-plyr » (vide) dans un parent avec la classe plyr-adaptive dans le Designer.
+.plyr-adaptive {
+  width: 100%;
+  height: 100%;
+}
+
+.plyr-adaptive .plyr,
+.plyr-adaptive .plyr__video-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+// Plyr utilise du padding-bottom pour le ratio ; on l’annule pour coller au conteneur.
+.plyr-adaptive .plyr__video-embed {
+  padding-bottom: 0 !important;
+  height: 100%;
+}
+
+.plyr-adaptive .plyr__video-embed iframe {
+  width: 100%;
+  height: 100%;
+}

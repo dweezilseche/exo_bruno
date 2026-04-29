@@ -1,6 +1,7 @@
+/** @returns {object | null} Instance Lenis pour initHeader() ; null si Lenis absent. */
 export function initSmoothScroll() {
   if (typeof Lenis === "undefined") {
-    return;
+    return null;
   }
 
   const lenis = new Lenis({
@@ -18,4 +19,6 @@ export function initSmoothScroll() {
     });
     gsap.ticker.lagSmoothing(0);
   }
+
+  return lenis;
 }

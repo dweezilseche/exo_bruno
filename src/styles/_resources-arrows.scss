@@ -1,0 +1,79 @@
+// Flèches Resources + wrappers (reprise Code Embed Webflow).
+// Au survol de .resources_item, les flèches sont ciblées via .arrow-wrapper pour gagner
+// en spécificité et pour inclure .arrow-left / .arrow-right (pas seulement .arrow).
+
+.arrow-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.arrow,
+.arrow-left,
+.arrow-right {
+  transition: transform 550ms ease;
+}
+
+// Deux icônes génériques .arrow dans le wrapper
+.arrow-wrapper .arrow:nth-child(1) {
+  transform: scale(0) translateX(-1rem);
+}
+
+.arrow-wrapper .arrow:nth-child(2) {
+  transform: scale(1) translateX(0);
+}
+
+// Carte Resources — léger zoom
+.resources_item {
+  transition: transform 550ms ease;
+}
+
+.resources_item:hover {
+  transform: scale(0.97);
+}
+
+// Survol de la carte : animation des flèches (toutes variantes de classe + même logique nth-child)
+.resources_item:hover .arrow-wrapper .arrow:nth-child(1),
+.resources_item:hover .arrow-wrapper .arrow-left:nth-child(1),
+.resources_item:hover .arrow-wrapper .arrow-right:nth-child(1) {
+  transform: scale(1) translateX(0.5rem);
+}
+
+.resources_item:hover .arrow-wrapper .arrow:nth-child(2),
+.resources_item:hover .arrow-wrapper .arrow-left:nth-child(2),
+.resources_item:hover .arrow-wrapper .arrow-right:nth-child(2) {
+  transform: scale(0) translateX(1rem);
+}
+
+// États par défaut — flèche gauche (survol du wrapper seul)
+.arrow-wrapper .arrow-left:nth-child(2) {
+  transform: scale(0) translateX(1.5rem);
+}
+
+.arrow-wrapper .arrow-left:nth-child(1) {
+  transform: scale(1) translateX(0.5rem);
+}
+
+.arrow-wrapper:hover .arrow-left:nth-child(2) {
+  transform: scale(1) translateX(-0.5rem);
+}
+
+.arrow-wrapper:hover .arrow-left:nth-child(1) {
+  transform: scale(0) translateX(-1.5rem);
+}
+
+// États par défaut — flèche droite (survol du wrapper seul)
+.arrow-wrapper .arrow-right:nth-child(1) {
+  transform: scale(0) translateX(-1.5rem);
+}
+
+.arrow-wrapper .arrow-right:nth-child(2) {
+  transform: scale(1) translateX(-0.5rem);
+}
+
+.arrow-wrapper:hover .arrow-right:nth-child(1) {
+  transform: scale(1) translateX(0.5rem);
+}
+
+.arrow-wrapper:hover .arrow-right:nth-child(2) {
+  transform: scale(0) translateX(1.5rem);
+}

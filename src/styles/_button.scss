@@ -1,5 +1,16 @@
 @use "buttons" as *;
+@use "variables" as *;
 
 .cta[data-wf--button--variant="primary"],.cta[data-wf--button--variant="secondary"]{
     @extend %button;
+}
+
+.cta{
+    transition: transform 550ms $ease-out-quart;
+
+    @media (pointer: fine) {
+        &:hover {
+            transform: scale(0.96);
+        }
+    }
 }
