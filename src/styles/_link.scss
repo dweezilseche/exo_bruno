@@ -1,0 +1,22 @@
+@use "variables" as *;
+
+.nav_menu_link, .link {
+    position: relative;
+
+    &:hover{
+        & > span{
+            background-size: 100% 0.1rem;
+            background-position: 0% 100%;
+        }
+    }
+
+    & > span {
+        display: inline;
+        line-height: 1.4;
+        background-image: linear-gradient(currentColor, currentColor);
+        background-position: 100% 100%;
+        background-repeat: no-repeat;
+        background-size: 0% 0.1rem;
+        transition: background-size 750ms $ease;
+      }
+}

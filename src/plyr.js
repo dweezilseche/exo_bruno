@@ -75,6 +75,7 @@ export function containerHasPlyrMedia(container) {
   const hasEmbedOrVideo = container.querySelector(MEDIA_SELECTOR) !== null;
 
   return forcedByAttribute || hasEmbedOrVideo;
+
 }
 
 /** Supprime les lecteurs Plyr à l’intérieur d’un bloc (avant de recréer le carrousel). */
